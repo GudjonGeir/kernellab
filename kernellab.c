@@ -18,15 +18,10 @@ static ssize_t kcurrent_write(struct kobject *kobj, struct kobj_attribute *attr,
 			 const char *buf, size_t count)
 {
 
-        /* Your code here. */
 	int errno;
 	int current_pid = (int)current->pid;
-	
-	void* dest;
-	sscanf(buf, "%s", (char*)&dest);
-	printk("buf: %s\n", buf);
-	printk("pid: %d\n", current_pid);
-	printk("dest: %p\n", dest);
+	void* dest = (void*)simple_strtol(buf, NULL, 16);
+
 	if((errno = copy_to_user(dest, (void*)&current_pid, sizeof(pid_t))) < 0)
 		return -EFAULT;
 	

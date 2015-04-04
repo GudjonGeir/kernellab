@@ -11,15 +11,8 @@
 void run_current()
 {
         int* pid = malloc(sizeof(int));
-	//int fd;
-	int address = (int)pid;
-	printf("%p\n", pid);
-	printf("%x\n", address);
-	/*
-	fd = open("/sys/kernel/kernellab/kcurrent", O_WRONLY);
-	write(fd, (void*)address, sizeof(int));
-	close(fd);
-	*/
+
+
 	FILE* fp = fopen("/sys/kernel/kernellab/kcurrent", "w");
 	fprintf(fp, "%p", pid);
 	fclose(fp);
