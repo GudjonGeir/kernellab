@@ -56,8 +56,14 @@ static int __init kernellab_init(void)
 {
 
         /* Your code here. */
-
+	struct task_struct *task;
 	int retval;
+	printk("kernellab module INJECTED\n");
+	for_each_process(task) {
+		if(task->pid == 1)
+			printk("Command: %s\n", task->comm);
+	}
+
 	kernellab_kobj = kobject_create_and_add("kernellab", kernel_kobj);
 	if (!kernellab_kobj)
 		return -ENOMEM;
@@ -72,6 +78,7 @@ static void __exit kernellab_exit(void)
 
 {
         /* Your code here. */
+	printk("kernellab module UNLOADED\n");
 
 	kobject_put(kernellab_kobj);
 }
