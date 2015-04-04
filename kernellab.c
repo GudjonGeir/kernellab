@@ -19,7 +19,15 @@ static ssize_t kcurrent_write(struct kobject *kobj, struct kobj_attribute *attr,
 {
 
         /* Your code here. */
-
+	int errno;
+	int current_pid = (int)current->pid;
+	
+	printk("buf: %s\n", buf);
+	printk("pid: %d\n", current_pid);
+	
+	if((errno = copy_to_user((void*)buf, (void*)&current_pid, sizeof(pid_t))) < 0)
+		return -EFAULT;
+	
   	return count;
 }
 
@@ -55,7 +63,6 @@ static struct kobject *kernellab_kobj;
 static int __init kernellab_init(void)
 {
 
-        /* Your code here. */
 	struct task_struct *task;
 	int retval;
 	printk("kernellab module INJECTED\n");
@@ -77,7 +84,6 @@ static int __init kernellab_init(void)
 static void __exit kernellab_exit(void)
 
 {
-        /* Your code here. */
 	printk("kernellab module UNLOADED\n");
 
 	kobject_put(kernellab_kobj);
