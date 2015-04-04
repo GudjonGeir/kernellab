@@ -22,10 +22,12 @@ static ssize_t kcurrent_write(struct kobject *kobj, struct kobj_attribute *attr,
 	int errno;
 	int current_pid = (int)current->pid;
 	
+	void* dest;
+	sscanf(buf, "%s", (char*)&dest);
 	printk("buf: %s\n", buf);
 	printk("pid: %d\n", current_pid);
-	
-	if((errno = copy_to_user((void*)buf, (void*)&current_pid, sizeof(pid_t))) < 0)
+	printk("dest: %p\n", dest);
+	if((errno = copy_to_user(dest, (void*)&current_pid, sizeof(pid_t))) < 0)
 		return -EFAULT;
 	
   	return count;
