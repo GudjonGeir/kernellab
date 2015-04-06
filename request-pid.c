@@ -24,20 +24,26 @@ void run_pid()
 {
         struct pid_info info;
 
-	struct sysf_message* msg = malloc(sizeof(struct sysf_message));
+	struct sysfs_message* msg = (struct sysfs_message*)malloc(sizeof(struct sysfs_message));
+	msg->pid = getpid();
+	msg->address = &info;
 
-        /* Your code here. */
+	FILE* fp = fopen("/sys/kernel/kernellab/pid", "w");
+	fprintf(fp, "%p", msg);
+	fclose(fp);
 
 
         printf("PID: %d\n", info.pid);
         printf("COMM: %s\n", info.comm);
         printf("State: %ld", info.state);
+	
+	free(msg);
 }
 
 
 int main()
 {
         run_current();    
-//        run_pid();
+        run_pid();
         return EXIT_SUCCESS;
 }

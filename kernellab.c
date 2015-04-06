@@ -40,15 +40,18 @@ static ssize_t pid_write(struct kobject *kobj, struct kobj_attribute *attr,
 {
  
        /* Your code here. */
-/*
 	unsigned long errno;
 	struct task_struct* task;
 
-	struct sysf_message* msg = kmalloc(sizeof(struct sysf_message),GFP_KERNEL);
-	struct pid_info* pinfo = kmalloc(sizeof(pinfo), GFP_KERNEL);
+	struct sysfs_message* msg = (struct sysfs_message*)kmalloc(sizeof(struct sysfs_message),GFP_KERNEL);
+	struct pid_info* pinfo = (struct pid_info*)kmalloc(sizeof(struct pid_info), GFP_KERNEL);
 	
 	void* source = (void*)simple_strtol(buf, NULL, 16);
-	if((errno = copy_from_user((void*)msg, source, sizeof(msg))) < 0)
+	if((errno = copy_from_user((void*)msg, source, sizeof(struct sysfs_message))) < 0)
+		return -EFAULT;
+
+
+	if((errno = copy_from_user((void*)pinfo, (void*)msg->address, sizeof(struct pid_info))) < 0)
 		return -EFAULT;
 
 	for_each_process(task) {
@@ -58,12 +61,14 @@ static ssize_t pid_write(struct kobject *kobj, struct kobj_attribute *attr,
 			pinfo->state = task->state;
 		}
 	}
-	if((errno = copy_to_user(((void*)msg->address, (void*)pinfo, sizeof(pinfo)))) < 0)
+	if((errno = copy_to_user((void*)msg->address, (void*)pinfo, sizeof(struct pid_info))) < 0)
 		return -EFAULT;
 	
-	if((errno = copy_to_user(((void*)source, (void*)msg, sizeof(msg)))) < 0)
+	if((errno = copy_to_user((void*)source, (void*)msg, sizeof(struct sysfs_message))) < 0)
 		return -EFAULT;
-*/			
+			
+	kfree(msg);
+	kfree(pinfo);
 
   	return count;
 }
