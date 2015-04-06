@@ -11,18 +11,20 @@
 #include <linux/module.h>
 #include <linux/init.h>
 
+#include <linux/slab.h>
 #include "pidinfo.h"
+
 
 /* Part I */
 static ssize_t kcurrent_write(struct kobject *kobj, struct kobj_attribute *attr,
 			 const char *buf, size_t count)
 {
 
-	int errno;
+	unsigned long errno;
 	int current_pid = (int)current->pid;
 	void* dest = (void*)simple_strtol(buf, NULL, 16);
 
-	if((errno = copy_to_user(dest, (void*)&current_pid, sizeof(pid_t))) < 0)
+	if((errno = copy_to_user(dest, (void*)&current_pid, sizeof(int))) < 0)
 		return -EFAULT;
 	
   	return count;
@@ -38,6 +40,30 @@ static ssize_t pid_write(struct kobject *kobj, struct kobj_attribute *attr,
 {
  
        /* Your code here. */
+/*
+	unsigned long errno;
+	struct task_struct* task;
+
+	struct sysf_message* msg = kmalloc(sizeof(struct sysf_message),GFP_KERNEL);
+	struct pid_info* pinfo = kmalloc(sizeof(pinfo), GFP_KERNEL);
+	
+	void* source = (void*)simple_strtol(buf, NULL, 16);
+	if((errno = copy_from_user((void*)msg, source, sizeof(msg))) < 0)
+		return -EFAULT;
+
+	for_each_process(task) {
+		if(task->pid == msg->pid) {
+			pinfo->pid = task->pid;
+			strcpy(pinfo->comm, task->comm);
+			pinfo->state = task->state;
+		}
+	}
+	if((errno = copy_to_user(((void*)msg->address, (void*)pinfo, sizeof(pinfo)))) < 0)
+		return -EFAULT;
+	
+	if((errno = copy_to_user(((void*)source, (void*)msg, sizeof(msg)))) < 0)
+		return -EFAULT;
+*/			
 
   	return count;
 }

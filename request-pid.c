@@ -12,7 +12,6 @@ void run_current()
 {
         int* pid = malloc(sizeof(int));
 
-
 	FILE* fp = fopen("/sys/kernel/kernellab/kcurrent", "w");
 	fprintf(fp, "%p", pid);
 	fclose(fp);
@@ -25,6 +24,7 @@ void run_pid()
 {
         struct pid_info info;
 
+	struct sysf_message* msg = malloc(sizeof(struct sysf_message));
 
         /* Your code here. */
 
